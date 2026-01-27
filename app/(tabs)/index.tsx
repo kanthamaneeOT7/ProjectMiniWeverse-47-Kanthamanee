@@ -1,98 +1,62 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import React, { useState, useCallback } from 'react';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, SafeAreaView, Image } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useRouter, useFocusEffect } from 'expo-router';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
+const FeedScreen = () => {
+  const router = useRouter();
+  const [communities, setCommunities] = useState<any[]>([]);
 
-export default function HomeScreen() {
+  // โหลดข้อมูลทุกครั้งที่หน้าจอนี้โชว์ (แก้บั๊กข้อมูลไม่ Update)
+  const loadCommunities = async () => {
+    try {
+      const savedData = await AsyncStorage.getItem('communities');
+      if (savedData) setCommunities(JSON.parse(savedData));
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  useFocusEffect(useCallback(() => { loadCommunities(); }, []));
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>weverse</Text>
+        <MaterialCommunityIcons name="bell-outline" size={24} color="black" />
+      </View>
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+      <FlatList
+        data={communities}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        keyExtractor={(item, index) => index.toString()}
+        ListHeaderComponent={
+          <TouchableOpacity style={styles.addCard} onPress={() => router.push('/Add')}>
+            <MaterialCommunityIcons name="plus" size={30} color="#ccc" />
+          </TouchableOpacity>
+        }
+        renderItem={({ item }) => (
+          <View style={styles.communityCard}>
+            <Image source={{ uri: item.imageUrl }} style={styles.communityImage} />
+            <Text style={styles.communityName}>{item.name}</Text>
+          </View>
+        )}
+      />
+    </SafeAreaView>
   );
-}
+};
 
+// แก้บั๊ก Cannot find name 'styles'
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
+  container: { flex: 1, backgroundColor: 'white' },
+  header: { flexDirection: 'row', justifyContent: 'space-between', padding: 15, alignItems: 'center' },
+  headerTitle: { fontSize: 24, fontWeight: 'bold', letterSpacing: -1 },
+  addCard: { width: 80, height: 80, borderRadius: 40, backgroundColor: '#f5f5f5', justifyContent: 'center', alignItems: 'center', margin: 10, borderStyle: 'dashed', borderWidth: 1, borderColor: '#ccc' },
+  communityCard: { alignItems: 'center', margin: 10 },
+  communityImage: { width: 80, height: 80, borderRadius: 40, backgroundColor: '#eee' },
+  communityName: { marginTop: 5, fontSize: 12, fontWeight: 'bold' }
 });
+
+export default FeedScreen; // แก้บั๊กชื่อไม่ตรง
