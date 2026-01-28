@@ -5,26 +5,26 @@ import { useRouter } from 'expo-router';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 const RemoveScreen = () => {
-  const router = useRouter();
-  const [communities, setCommunities] = useState<any[]>([]);
+  const router = useRouter()
+  const [communities, setCommunities] = useState<any[]>([])
 
-  // 1. โหลดข้อมูลมาโชว์ก่อนลบ
+
   const loadData = async () => {
-    const savedData = await AsyncStorage.getItem('communities');
-    if (savedData) setCommunities(JSON.parse(savedData));
+    const savedData = await AsyncStorage.getItem('communities')
+    if (savedData) setCommunities(JSON.parse(savedData))
   };
 
-  useEffect(() => { loadData(); }, []);
+  useEffect(() => { loadData(); }, [])
 
-  // 2. ฟังก์ชันลบข้อมูล (หัวใจหลักของหน้านี้)
+  
   const deleteCommunity = async (index: number) => {
     Alert.alert("ยืนยัน", "จะลบวงนี้จริงๆ เหรอพี่?", [
       { text: "ยกเลิก" },
       { text: "ลบเลย", onPress: async () => {
-          const newData = [...communities];
-          newData.splice(index, 1); // เอาออก 1 รายการตามลำดับที่เลือก
-          await AsyncStorage.setItem('communities', JSON.stringify(newData));
-          setCommunities(newData); // อัปเดตหน้าจอทันที
+          const newData = [...communities]
+          newData.splice(index, 1)
+          await AsyncStorage.setItem('communities', JSON.stringify(newData))
+          setCommunities(newData)
         } 
       }
     ]);

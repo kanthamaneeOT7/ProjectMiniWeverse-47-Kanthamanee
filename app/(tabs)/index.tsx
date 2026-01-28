@@ -1,14 +1,20 @@
-import React, { useState, useCallback } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, SafeAreaView, Image } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useRouter, useFocusEffect } from 'expo-router';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect, useRouter } from 'expo-router';
+import React, { useCallback, useState } from 'react';
+import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const FeedScreen = () => {
   const router = useRouter();
   const [communities, setCommunities] = useState<any[]>([]);
+  const banners = [
+    {id:'1',Image:'https://uniquenmix.com/cdn/shop/products/maxresdefault_2_1445x.jpg?v=1596537098'},
+    {id:'2',Image:'https://uniquenmix.com/cdn/shop/products/3_43f3bb87-5509-48c1-930c-e970a7eb9672_1445x.jpg?v=1569403466'},
+    {id:'3',Image:'https://i.ytimg.com/vi/rJ6HDfpOsFQ/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLClHwkvFz5JIyPpMc6yc4hgLfNgNw'}
+  ]
 
-  // โหลดข้อมูลทุกครั้งที่หน้าจอนี้โชว์ (แก้บั๊กข้อมูลไม่ Update)
+  
   const loadCommunities = async () => {
     try {
       const savedData = await AsyncStorage.getItem('communities');
@@ -27,7 +33,8 @@ const FeedScreen = () => {
         <MaterialCommunityIcons name="bell-outline" size={24} color="black" />
       </View>
 
-      <FlatList
+      <View  style={styles.whiteSection}>
+        <FlatList
         data={communities}
         horizontal
         showsHorizontalScrollIndicator={false}
@@ -37,26 +44,90 @@ const FeedScreen = () => {
             <MaterialCommunityIcons name="plus" size={30} color="#ccc" />
           </TouchableOpacity>
         }
-        renderItem={({ item }) => (
+           renderItem={({ item }) => (
           <View style={styles.communityCard}>
             <Image source={{ uri: item.imageUrl }} style={styles.communityImage} />
             <Text style={styles.communityName}>{item.name}</Text>
-          </View>
-        )}
+              </View>
+             )} 
+      /> 
+      </View>
+
+     
+         <FlatList
+       data={banners}
+       horizontal
+       pagingEnabled
+       showsHorizontalScrollIndicator={false}
+       keyExtractor={(item)=> item.id} 
+         renderItem={({ item }) => (
+         <TouchableOpacity style={styles.ImageSlideContainer}>
+         <Image source={{ uri:item.Image}}
+         style={styles.bannerImage}
+          />
+         </TouchableOpacity>
+        
+          
+         )} 
+         
+     
+    
+      
       />
+    
+     
+
+      
+       
     </SafeAreaView>
+
+
   );
+  
 };
 
-// แก้บั๊ก Cannot find name 'styles'
+
+
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: 'white' },
-  header: { flexDirection: 'row', justifyContent: 'space-between', padding: 15, alignItems: 'center' },
+  container: { flex: 1, backgroundColor: '#ffffff' ,padding:10},
+  header: { flexDirection: 'row', justifyContent: 'space-between', padding: 15, alignItems: 'center'},
   headerTitle: { fontSize: 24, fontWeight: 'bold', letterSpacing: -1 },
-  addCard: { width: 80, height: 80, borderRadius: 40, backgroundColor: '#f5f5f5', justifyContent: 'center', alignItems: 'center', margin: 10, borderStyle: 'dashed', borderWidth: 1, borderColor: '#ccc' },
+  addCard: { width: 60, height: 60, borderRadius: 40, backgroundColor: '#f5f5f5', justifyContent: 'center', alignItems: 'center', margin: 10, borderStyle: 'dashed', borderWidth: 1, borderColor: '#ccc' },
   communityCard: { alignItems: 'center', margin: 10 },
-  communityImage: { width: 80, height: 80, borderRadius: 40, backgroundColor: '#eee' },
-  communityName: { marginTop: 5, fontSize: 12, fontWeight: 'bold' }
+  communityImage: { width: 60, height: 60, borderRadius: 40, backgroundColor: '#eee' },
+  communityName: { marginTop: 5, fontSize: 12, fontWeight: 'bold' },
+
+  whiteSection:{
+    backgroundColor:'white',
+    borderRadius:25,
+    margin:15,
+    marginBottom:10,
+    padding:5,
+    marginTop:10,
+
+    elevation:5
+  },
+
+  ImageSlideContainer:{
+    width:350,
+    padding:3,
+    backgroundColor:'white',
+    borderRadius:10,
+    elevation:5
+  },
+
+  bannerImage:{
+
+    width:'100%',
+    height:200,
+    borderRadius:15,
+    backgroundColor:'white',
+
+   elevation:5
+  }
+
+
 });
 
-export default FeedScreen; // แก้บั๊กชื่อไม่ตรง
+
+export default FeedScreen
