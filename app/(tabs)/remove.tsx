@@ -1,12 +1,40 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, Alert } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useRouter } from 'expo-router';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import React, { useState, useEffect ,useCallback,useRef} from 'react'
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, Alert } from 'react-native'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { useRouter } from 'expo-router'
+import { MaterialCommunityIcons } from '@expo/vector-icons'
+import { useFocusEffect } from 'expo-router'
+
+
 
 const RemoveScreen = () => {
   const router = useRouter()
   const [communities, setCommunities] = useState<any[]>([])
+ 
+
+// ฟังก์ชันดึงข้อมูล (เหมือนหน้าแรกเลยลูกพี่)
+const loadCommunities = async () => {
+  try {
+    const savedData = await AsyncStorage.getItem('communities');
+    if (savedData) {
+      setCommunities(JSON.parse(savedData));
+    }
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+// สั่งให้โหลดข้อมูลทุกครั้งที่เปิดหน้านี้
+  useFocusEffect(
+  useCallback(() => {
+    loadCommunities();
+  }, [])
+);
+const removeCommunity = async (name: string) => {
+  const updated = communities.filter(c => c.name !== name);
+  setCommunities(updated);
+  await AsyncStorage.setItem('communities', JSON.stringify(updated));
+};
 
 
   const loadData = async () => {
@@ -18,9 +46,9 @@ const RemoveScreen = () => {
 
   
   const deleteCommunity = async (index: number) => {
-    Alert.alert("ยืนยัน", "จะลบวงนี้จริงๆ เหรอพี่?", [
+    Alert.alert("ยืนยัน", "ยืนยันการลบ?", [
       { text: "ยกเลิก" },
-      { text: "ลบเลย", onPress: async () => {
+      { text: "ลบ", onPress: async () => {
           const newData = [...communities]
           newData.splice(index, 1)
           await AsyncStorage.setItem('communities', JSON.stringify(newData))
@@ -36,21 +64,24 @@ const RemoveScreen = () => {
         <TouchableOpacity onPress={() => router.back()}>
           <MaterialCommunityIcons name="arrow-left" size={28} />
         </TouchableOpacity>
-        <Text style={styles.title}>จัดการ Community</Text>
+        <Text style={styles.title}>Remove artist</Text>
       </View>
 
       <FlatList
-        data={communities}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item, index }) => (
-          <View style={styles.item}>
-            <Text style={styles.itemName}>{item.name}</Text>
-            <TouchableOpacity onPress={() => deleteCommunity(index)}>
-              <MaterialCommunityIcons name="trash-can-outline" size={24} color="red" />
-            </TouchableOpacity>
-          </View>
-        )}
-      />
+  data={communities}
+  keyExtractor={(item, index) => index.toString()}
+  renderItem={({ item }) => (
+    <View style={styles.removeList}>
+      <Text style={styles.artistName}>{item.name}</Text>
+      <TouchableOpacity 
+        onPress={() => removeCommunity(item.name)} // ส่งชื่อวงไปลบ
+        style={styles.deleteBtn}
+      >
+        <MaterialCommunityIcons name="delete-outline" size={24} color="red" />
+      </TouchableOpacity>
+    </View>
+  )}
+/>
     </View>
   );
 };
@@ -60,7 +91,10 @@ const styles = StyleSheet.create({
   header: { flexDirection: 'row', alignItems: 'center', marginBottom: 20, marginTop: 40 },
   title: { fontSize: 20, fontWeight: 'bold', marginLeft: 15 },
   item: { flexDirection: 'row', justifyContent: 'space-between', padding: 15, borderBottomWidth: 1, borderBottomColor: '#eee', alignItems: 'center' },
-  itemName: { fontSize: 16 }
+  itemName: { fontSize: 16 },
+  removeList: { flexDirection: 'row', justifyContent: 'space-between', padding: 15, borderBottomWidth: 1, borderBottomColor: '#eee' },
+artistName: { fontSize: 16, fontWeight: 'bold' },
+deleteBtn: { padding: 5 },
 });
 
 export default RemoveScreen;
