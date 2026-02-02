@@ -20,7 +20,7 @@ const AddScreen = () => {
       
       await AsyncStorage.setItem('communities', JSON.stringify(newData));
       Alert.alert("สำเร็จ", "เพิ่มวงเรียบร้อย!");
-      router.replace('/(tabs)'); // แก้บั๊ก GO_BACK Error
+      router.replace('/(tabs)'); 
     } catch (e) {
       Alert.alert("Error", "เซฟไม่ได้อะพี่");
     }
@@ -52,4 +52,4 @@ const styles = StyleSheet.create({
   buttonText: { color: 'white', fontWeight: 'bold', fontSize: 16 }
 });
 
-export default AddScreen;
+export default AddScreen

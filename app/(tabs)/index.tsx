@@ -9,9 +9,14 @@ const FeedScreen = () => {
   const router = useRouter();
   const [communities, setCommunities] = useState<any[]>([]);
   const banners = [
-    {id:'1',Image:'https://uniquenmix.com/cdn/shop/products/maxresdefault_2_1445x.jpg?v=1596537098'},
-    {id:'2',Image:'https://uniquenmix.com/cdn/shop/products/3_43f3bb87-5509-48c1-930c-e970a7eb9672_1445x.jpg?v=1569403466'},
-    {id:'3',Image:'https://i.ytimg.com/vi/rJ6HDfpOsFQ/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLClHwkvFz5JIyPpMc6yc4hgLfNgNw'}
+    {id:'1',Image:'https://pbs.twimg.com/media/G-wAVy2bQAUZ8ZV?format=jpg&name=small'},
+    {id:'2',Image:'https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/3d/2f/94/3d2f9427-9702-6365-960b-66920e0d41c0/198704942365_Cover.jpg/1200x630wp-60.jpg'},
+    {id:'3',Image:'https://pbs.twimg.com/media/G90-BvjbEAEwHJw?format=jpg&name=small'}
+  ]
+
+  const posts =[
+    {id:'p1',author:'BTS',content:'Fliming'},
+    {id:'p2',author:'BTS',content:'Fliming'}
   ]
 
   
@@ -50,31 +55,50 @@ const FeedScreen = () => {
             <Text style={styles.communityName}>{item.name}</Text>
               </View>
              )} 
-      /> 
+       /> 
       </View>
 
      
-         <FlatList
-       data={banners}
-       horizontal
-       pagingEnabled
-       showsHorizontalScrollIndicator={false}
-       keyExtractor={(item)=> item.id} 
+        <FlatList
+         data={banners}
+         horizontal
+         pagingEnabled
+         showsHorizontalScrollIndicator={false}
+         keyExtractor={(item)=> item.id} 
          renderItem={({ item }) => (
          <TouchableOpacity style={styles.ImageSlideContainer}>
          <Image source={{ uri:item.Image}}
          style={styles.bannerImage}
           />
          </TouchableOpacity>
-        
           
-         )} 
-         
-     
-    
-      
+         )}
+
+
       />
-    
+
+      <FlatList
+       data={posts}
+       scrollEnabled={false}
+       keyExtractor={Item => Item.id}
+       renderItem={({ item }) => (
+        <View style={styles.postCard}>
+          <View style={styles.postHeader}>
+            <View style={styles.avatarMini} />
+            <Text style={styles.postAuthor}>{item.author}</Text>
+          </View>
+          <Text style={styles.postContent}>{item.content}</Text>
+          <Image source={{ uri: item.image }} style={styles.postImage} />
+        </View>
+       )}
+      />
+
+
+
+      
+
+      
+   
      
 
       
@@ -124,6 +148,24 @@ const styles = StyleSheet.create({
     backgroundColor:'white',
 
    elevation:5
+  },
+
+  postCard:{
+    backgroundColor:'white',
+    margin:15,
+    borderRadius:15,
+    padding:15,
+    elevation:3
+  },
+  postImage:{
+    width:'100%',
+    height:250,
+    borderRadius:10,
+    marginTop:10
+  },
+  postAuthor:{
+    fontWeight:'bold',
+    fontSize:16
   }
 
 
