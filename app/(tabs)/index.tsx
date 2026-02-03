@@ -118,7 +118,7 @@ const FeedScreen = () => {
     {id: 'c5',
     target: 'Cortis',
     author: 'KEONHO',
-    content: 'Found BIG BTRO',
+    content: 'Found BIG BRO',
     image:'https://i.pinimg.com/736x/09/11/ca/0911cafda473dff2723b8f9a8b2ad8ab.jpg',
     avatar: 'https://i.pinimg.com/736x/a7/80/ac/a780acb571274fd035ce7fcf362e70ef.jpg',},
 
@@ -451,7 +451,7 @@ const styles = StyleSheet.create({
   interactionBar: {
     flexDirection: 'row',
     paddingTop: 12,
-    marginTop: 5, // ลดช่องว่างระหว่างรูปกับปุ่ม
+    marginTop: 5, 
     borderTopWidth: 0.5,
     borderTopColor: '#eee',
   },

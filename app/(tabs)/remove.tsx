@@ -15,19 +15,19 @@ const RemoveScreen = () => {
 
 const loadCommunities = async () => {
   try {
-    const savedData = await AsyncStorage.getItem('communities');
+    const savedData = await AsyncStorage.getItem('communities')
     if (savedData) {
-      setCommunities(JSON.parse(savedData));
+      setCommunities(JSON.parse(savedData))
     }
   } catch (e) {
-    console.error(e);
+    console.error(e)
   }
 };
 
 
   useFocusEffect(
   useCallback(() => {
-    loadCommunities();
+    loadCommunities()
   }, [])
 );
 const removeCommunity = async (name: string) => {
@@ -84,4 +84,4 @@ artistName: { fontSize: 16, fontWeight: 'bold' },
 deleteBtn: { padding: 5 },
 });
 
-export default RemoveScreen;
+export default RemoveScreen
