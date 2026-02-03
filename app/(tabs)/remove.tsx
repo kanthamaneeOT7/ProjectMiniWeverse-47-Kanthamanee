@@ -42,21 +42,8 @@ const removeCommunity = async (name: string) => {
     if (savedData) setCommunities(JSON.parse(savedData))
   };
 
-  useEffect(() => { loadData(); }, [])
-
   
-  const deleteCommunity = async (index: number) => {
-    Alert.alert("ยืนยัน", "ยืนยันการลบ?", [
-      { text: "ยกเลิก" },
-      { text: "ลบ", onPress: async () => {
-          const newData = [...communities]
-          newData.splice(index, 1)
-          await AsyncStorage.setItem('communities', JSON.stringify(newData))
-          setCommunities(newData)
-        } 
-      }
-    ]);
-  };
+  
 
   return (
     <View style={styles.container}>
