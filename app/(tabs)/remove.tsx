@@ -12,7 +12,7 @@ const RemoveScreen = () => {
   const [communities, setCommunities] = useState<any[]>([])
  
 
-// ฟังก์ชันดึงข้อมูล (เหมือนหน้าแรกเลยลูกพี่)
+
 const loadCommunities = async () => {
   try {
     const savedData = await AsyncStorage.getItem('communities');
@@ -24,7 +24,7 @@ const loadCommunities = async () => {
   }
 };
 
-// สั่งให้โหลดข้อมูลทุกครั้งที่เปิดหน้านี้
+
   useFocusEffect(
   useCallback(() => {
     loadCommunities();
@@ -74,7 +74,7 @@ const removeCommunity = async (name: string) => {
     <View style={styles.removeList}>
       <Text style={styles.artistName}>{item.name}</Text>
       <TouchableOpacity 
-        onPress={() => removeCommunity(item.name)} // ส่งชื่อวงไปลบ
+        onPress={() => removeCommunity(item.name)} 
         style={styles.deleteBtn}
       >
         <MaterialCommunityIcons name="delete-outline" size={24} color="red" />
